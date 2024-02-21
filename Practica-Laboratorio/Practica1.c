@@ -20,11 +20,16 @@ typedef struct Nodo
 
 void menu();
 int menuMsg();
+
 void addNodeMenu();
 int addNodeMsg();
 void addNodeBegin(Nodo *head);
 void addNodePosition(Nodo *head);
+void addNodeEnd(Nodo *head);
+
 void showList(Nodo *head);
+void searchNode(Nodo *head);
+void deleteNode(Nodo *head);
 void freeList(Nodo **head);
 Nodo *createList();
 Nodo *createNodo();
@@ -52,10 +57,10 @@ void menu()
             showList(head);
             break;
         case 3:
-            printf("Buscar\n");
+            searchNode(head);
             break;
         case 4:
-            printf("Eliminar\n");
+            deleteNode(head);
             break;
         case 5:
             freeList(&head);
@@ -97,6 +102,8 @@ void addNodeMenu(Nodo *head)
         case 2:
             addNodePosition(head);
             break;
+        case 3:
+            addNodeEnd(head);
         }
         if (op != 0)
         {
@@ -159,6 +166,27 @@ void addNodePosition(Nodo *head)
     getchar();
 }
 
+void addNodeEnd(Nodo *head)
+{
+    Nodo *new = createNodo();
+    printf("Matricula: ");
+    scanf("%s", new->data.matricula);
+    printf("Apellido Paterno: ");
+    scanf("%s", new->data.apellido_paterno);
+    printf("Apellido Materno: ");
+    scanf("%s", new->data.apellido_materno);
+    printf("Nombres: ");
+    scanf("%s", new->data.nombres);
+    Nodo *temp = head;
+    while (temp->siguiente != NULL)
+    {
+        temp = temp->siguiente;
+    }
+    temp->siguiente = new;
+    printf("Nodo agregado\n");
+    getchar();
+}
+
 void showList(Nodo *head)
 {
     Nodo *temp = head->siguiente;
@@ -181,6 +209,52 @@ void showList(Nodo *head)
     }
 }
 
+void searchNode(Nodo *head)
+{
+    char matricula[20];
+    printf("Matricula: ");
+    scanf("%s", matricula);
+    Nodo *temp = head->siguiente;
+    while (temp != NULL)
+    {
+        if (strcmp(temp->data.matricula, matricula) == 0)
+        {
+            printf("------------------------------------\n");
+            printf("Matricula: %s\n", temp->data.matricula);
+            printf("Apellido Paterno: %s\n", temp->data.apellido_paterno);
+            printf("Apellido Materno: %s\n", temp->data.apellido_materno);
+            printf("Nombres: %s\n", temp->data.nombres);
+            printf("------------------------------------\n");
+            getchar();
+            return;
+        }
+        temp = temp->siguiente;
+    }
+    printf("Nodo no encontrado\n");
+}
+
+void deleteNode(Nodo *head)
+{
+    char matricula[20];
+    printf("Matricula: ");
+    scanf("%s", matricula);
+    Nodo *temp = head;
+    while (temp->siguiente != NULL)
+    {
+        if (strcmp(temp->siguiente->data.matricula, matricula) == 0)
+        {
+            Nodo *aux = temp->siguiente;
+            temp->siguiente = temp->siguiente->siguiente;
+            free(aux);
+            printf("Nodo eliminado\n");
+            getchar();
+            return;
+        }
+        temp = temp->siguiente;
+    }
+    printf("Nodo no encontrado\n");
+}
+
 void freeList(Nodo **head)
 {
     Nodo *temp;
@@ -191,7 +265,7 @@ void freeList(Nodo **head)
         free(temp);
     }
     printf("Lista liberada\n");
-    *head = NULL; 
+    *head = NULL;
 }
 
 Nodo *createNodo()
