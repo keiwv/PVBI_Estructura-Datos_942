@@ -1,9 +1,14 @@
+/*
+    Date created: February 22, 2024 // Last Modified: February 22, 2024
+
+    This program is a practice of the use of linked lists in C language.
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "teemo.h"
+#include "../teemo.h"
 
-// Definición de la estructura Nodo
 typedef struct Information
 {
     char matricula[20];
