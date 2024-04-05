@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct _Nodo
 {
@@ -14,7 +15,8 @@ void insert(Nodo *tree, int dato);
 void displayPostOrder(Nodo *tree);
 void displayInnOrder(Nodo *tree);
 void displayPreOrder(Nodo *tree);
-
+int findHeight(Nodo *tree);
+int getNumLeaves(Nodo *tree);
 
 // **** FUNCTIONS DEVELOPMENTS ****
 Nodo *createNode(int dato)
@@ -60,7 +62,6 @@ void displayPostOrder(Nodo *tree)
         displayPostOrder(tree->DerePTR);
         printf("%d ", tree->dato);
     }
-    
 }
 
 void displayInnOrder(Nodo *tree)
@@ -71,7 +72,6 @@ void displayInnOrder(Nodo *tree)
         printf("%d ", tree->dato);
         displayInnOrder(tree->DerePTR);
     }
-    
 }
 
 void displayPreOrder(Nodo *tree)
@@ -84,4 +84,65 @@ void displayPreOrder(Nodo *tree)
     }
 }
 
+int findHeight(Nodo *tree)
+{
+    if (tree == NULL)
+    {
+        return -1;
+    }
+    else
+    {
+        int left = findHeight(tree->izqPTR);
+        int right = findHeight(tree->DerePTR);
 
+        int maxHeight = left;
+        if (maxHeight < right)
+        {
+            maxHeight = right;
+        }
+        return maxHeight + 1;
+    }
+}
+
+int getNumLeaves(Nodo *tree)
+{
+    if (tree == NULL)
+    {
+        return 0;
+    }
+    else
+    {
+        if (tree->DerePTR == NULL && tree->izqPTR == NULL)
+        {
+            return 1;
+        }
+    }
+
+    return getNumLeaves(tree->izqPTR) + getNumLeaves(tree->DerePTR);
+}
+
+bool isComplete(Nodo *tree)
+{
+    if (tree == NULL)
+    {
+        return true;
+    }
+    else
+    {
+        if ((tree->izqPTR == NULL && tree->DerePTR == NULL))
+        {
+            return true;
+        }
+        else
+        {
+            if (tree->izqPTR != NULL && tree->DerePTR != NULL)
+            {
+                return (isComplete(tree->izqPTR) && isComplete(tree->DerePTR));
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}
