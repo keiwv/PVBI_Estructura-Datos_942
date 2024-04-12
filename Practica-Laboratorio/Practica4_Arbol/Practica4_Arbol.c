@@ -4,8 +4,8 @@
 
 int main()
 {
-    int datos[15] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    int i, n = 15;
+    int datos[3] = {4, 2, 7};
+    int i, n = 3;
     Nodo *tree = createNode(datos[0]);
 
     for (i = 1; i < n; i++)
@@ -26,9 +26,10 @@ int main()
     displayPostOrder(tree);
     printf("\n");
 
-    printf("Altura del nodo: %d\n", findHeight(tree) - 1);
+    printf("Altura del nodo: %d\n", findHeight(tree));
     printf("Numero de hojas: %d\n", getNumLeaves(tree));
     printf("Es completo: %d\n", isComplete(tree));
+    printf("Balanceado: %d\n", isBalanced(tree));
 
     return 0;
 }

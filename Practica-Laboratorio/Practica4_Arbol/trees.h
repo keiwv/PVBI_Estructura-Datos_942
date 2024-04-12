@@ -88,19 +88,22 @@ int findHeight(Nodo *tree)
 {
     if (tree == NULL)
     {
-        return -1;
+        return 0;
     }
     else
     {
         int left = findHeight(tree->izqPTR);
         int right = findHeight(tree->DerePTR);
-
-        int maxHeight = left;
-        if (maxHeight < right)
+        
+        if (left > right)
         {
-            maxHeight = right;
+            return left + 1;
         }
-        return maxHeight + 1;
+        else
+        {
+            return right + 1;
+        }
+        
     }
 }
 
@@ -145,4 +148,28 @@ bool isComplete(Nodo *tree)
             }
         }
     }
+}
+
+
+bool isBalanced(Nodo *tree)
+{
+    if (tree == NULL)
+    {
+        return true;
+    }
+
+    int leftHeight = findHeight(tree->izqPTR);
+    int rightHeight = findHeight(tree->DerePTR);
+    
+    int difference = leftHeight - rightHeight;
+
+    if (difference == -1 || difference == 0 || difference == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
 }
