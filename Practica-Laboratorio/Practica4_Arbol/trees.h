@@ -17,6 +17,8 @@ void displayInnOrder(Nodo *tree);
 void displayPreOrder(Nodo *tree);
 int findHeight(Nodo *tree);
 int getNumLeaves(Nodo *tree);
+Nodo *findMinor(Nodo *tree);
+Nodo *deleteNode(Nodo *tree, int dato);
 
 // **** FUNCTIONS DEVELOPMENTS ****
 Nodo *createNode(int dato)
@@ -173,3 +175,56 @@ bool isBalanced(Nodo *tree)
     }
 
 }
+
+Nodo *findMinor(Nodo *tree)
+{
+    while (tree->izqPTR != NULL)
+    {
+        tree = tree->izqPTR;
+    }
+    return tree;
+}
+
+Nodo *deleteNode(Nodo *tree, int dato)
+{
+    if (tree == NULL)
+    {
+        return tree;
+    }
+
+    if (dato < tree->dato)
+    {
+       tree->izqPTR = deleteNode(tree->izqPTR, dato);
+    }
+    else if (dato > tree->dato)
+    {
+        tree->DerePTR = deleteNode(tree->DerePTR, dato);
+    }
+    else
+    {
+        if (tree->izqPTR == NULL)
+        {
+            Nodo *temp = createNode(dato);
+            temp = tree->DerePTR;
+            free(tree);
+            return temp;
+        }
+        else
+        {
+            if (tree->DerePTR == NULL)
+            {
+                Nodo *temp = createNode(dato);
+                temp = tree->izqPTR;
+                free(temp);
+                return temp;
+            }
+            Nodo *temp = findMinor(tree->DerePTR);
+            tree->dato = temp->dato;
+            tree->DerePTR = deleteNode(tree->DerePTR, temp->dato);
+        }
+        return tree;
+        
+    }
+    
+}
+
