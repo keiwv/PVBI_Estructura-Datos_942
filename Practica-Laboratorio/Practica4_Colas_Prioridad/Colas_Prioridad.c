@@ -1,62 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct nodo
-{
-    int valor;
-    struct nodo *izq;
-    struct nodo *der;
-} Nodo;
-
-typedef struct {
-    Nodo *raiz;
-    int tamano;
-} Heap;
-
-void Insert(Heap *heap, int value, int prioridad);
-Nodo *CreateNode(int value);
+void Insert(int *heap, int value, int *size);
+void HeapifyUp(int *heap, int index);
+void Swap(int *a, int *b);
+void PrintHeap(int *heap, int size);
 
 int main()
 {
+    int *heap = (int *)malloc(sizeof(int) * 10);
+    int temp[10] = {2, 4, 1, 5, 8, 7, 12, 11, 10, 3};
+    int heapSize = 0;
 
+    for (int i = 0; i < 10; i++)
+    {
+        Insert(heap, temp[i], &heapSize);
+    }
+    PrintHeap(heap, heapSize); // Print the heap after each insertion
+    Insert(heap, 0, &heapSize);
+
+    PrintHeap(heap, heapSize); // Print the heap after each insertion
+    free(heap);
     return 0;
 }
 
-Nodo *CreateNode(int value)
+void Insert(int *heap, int value, int *size)
 {
-    Nodo *temp = (Nodo*)malloc(sizeof(Nodo));
-    if (temp == NULL)
-    {
-        printf("Error al asignar memoria\n");
-        return NULL;
-    }
-    
-    temp->valor = value;
-    temp->izq = NULL;
-    temp->der = NULL;
-    return temp;
+    heap[*size] = value;
+    (*size)++;
+    HeapifyUp(heap, *size - 1);
 }
 
-void Insert(Heap *heap, int value, int prioridad)
+void HeapifyUp(int *heap, int index)
 {
-    Nodo *newNode = CreateNode(value);
-
-    if (newNode == NULL)
+    int parentIndex = (index - 1) / 2;
+    while (index > 0 && heap[index] < heap[parentIndex])
     {
-        return;
+        Swap(&heap[index], &heap[parentIndex]);
+        index = parentIndex;
+        parentIndex = (index - 1) / 2;
     }
+}
 
-    if (heap == NULL)
+void Swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void PrintHeap(int *heap, int size)
+{
+    for (int i = 0; i < size; i++)
     {
-        heap->raiz = newNode;
-        
+        printf("%d ", heap[i]);
     }
-    else
-    {
-        
-    }
-    
-
-
-    
+    printf("\n");
 }
