@@ -17,8 +17,12 @@ void displayInnOrder(Nodo *tree);
 void displayPreOrder(Nodo *tree);
 int findHeight(Nodo *tree);
 int getNumLeaves(Nodo *tree);
+bool isComplete(Nodo *tree);
+bool isBalanced(Nodo *tree);
 Nodo *findMinor(Nodo *tree);
 Nodo *deleteNode(Nodo *tree, int dato);
+Nodo *findNode(Nodo *tree, int dato);
+void modifyNode(Nodo *tree, int oldDato, int newDato);
 
 // **** FUNCTIONS DEVELOPMENTS ****
 Nodo *createNode(int dato)
@@ -97,15 +101,7 @@ int findHeight(Nodo *tree)
         int left = findHeight(tree->izqPTR);
         int right = findHeight(tree->DerePTR);
         
-        if (left > right)
-        {
-            return left + 1;
-        }
-        else
-        {
-            return right + 1;
-        }
-        
+        return (left > right) ? left + 1 : right + 1;
     }
 }
 
@@ -115,12 +111,9 @@ int getNumLeaves(Nodo *tree)
     {
         return 0;
     }
-    else
+    if (tree->izqPTR == NULL && tree->DerePTR == NULL)
     {
-        if (tree->DerePTR == NULL && tree->izqPTR == NULL)
-        {
-            return 1;
-        }
+        return 1;
     }
 
     return getNumLeaves(tree->izqPTR) + getNumLeaves(tree->DerePTR);
@@ -132,26 +125,16 @@ bool isComplete(Nodo *tree)
     {
         return true;
     }
-    else
+    if (tree->izqPTR == NULL && tree->DerePTR == NULL)
     {
-        if ((tree->izqPTR == NULL && tree->DerePTR == NULL))
-        {
-            return true;
-        }
-        else
-        {
-            if (tree->izqPTR != NULL && tree->DerePTR != NULL)
-            {
-                return (isComplete(tree->izqPTR) && isComplete(tree->DerePTR));
-            }
-            else
-            {
-                return false;
-            }
-        }
+        return true;
     }
+    if (tree->izqPTR != NULL && tree->DerePTR != NULL)
+    {
+        return isComplete(tree->izqPTR) && isComplete(tree->DerePTR);
+    }
+    return false;
 }
-
 
 bool isBalanced(Nodo *tree)
 {
@@ -165,20 +148,14 @@ bool isBalanced(Nodo *tree)
     
     int difference = leftHeight - rightHeight;
 
-    if (difference == -1 || difference == 0 || difference == 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-
+    return (difference >= -1 && difference <= 1) &&
+           isBalanced(tree->izqPTR) &&
+           isBalanced(tree->DerePTR);
 }
 
 Nodo *findMinor(Nodo *tree)
 {
-    while (tree->izqPTR != NULL)
+    while (tree != NULL && tree->izqPTR != NULL)
     {
         tree = tree->izqPTR;
     }
@@ -194,7 +171,7 @@ Nodo *deleteNode(Nodo *tree, int dato)
 
     if (dato < tree->dato)
     {
-       tree->izqPTR = deleteNode(tree->izqPTR, dato);
+        tree->izqPTR = deleteNode(tree->izqPTR, dato);
     }
     else if (dato > tree->dato)
     {
@@ -204,27 +181,41 @@ Nodo *deleteNode(Nodo *tree, int dato)
     {
         if (tree->izqPTR == NULL)
         {
-            Nodo *temp = createNode(dato);
-            temp = tree->DerePTR;
+            Nodo *temp = tree->DerePTR;
             free(tree);
             return temp;
         }
-        else
+        if (tree->DerePTR == NULL)
         {
-            if (tree->DerePTR == NULL)
-            {
-                Nodo *temp = createNode(dato);
-                temp = tree->izqPTR;
-                free(temp);
-                return temp;
-            }
-            Nodo *temp = findMinor(tree->DerePTR);
-            tree->dato = temp->dato;
-            tree->DerePTR = deleteNode(tree->DerePTR, temp->dato);
+            Nodo *temp = tree->izqPTR;
+            free(tree);
+            return temp;
         }
-        return tree;
-        
+        Nodo *temp = findMinor(tree->DerePTR);
+        tree->dato = temp->dato;
+        tree->DerePTR = deleteNode(tree->DerePTR, temp->dato);
     }
-    
+    return tree;
 }
 
+Nodo *findNode(Nodo *tree, int dato)
+{
+    if (tree == NULL || tree->dato == dato)
+    {
+        return tree;
+    }
+    if (dato < tree->dato)
+    {
+        return findNode(tree->izqPTR, dato);
+    }
+    return findNode(tree->DerePTR, dato);
+}
+
+void modifyNode(Nodo *tree, int oldDato, int newDato)
+{
+    Nodo *node = findNode(tree, oldDato);
+    if (node != NULL)
+    {
+        node->dato = newDato;
+    }
+}
